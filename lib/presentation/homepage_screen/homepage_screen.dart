@@ -181,7 +181,7 @@ class HomepageScreen extends StatelessWidget {
               SizedBox(height: 10),
               Text(
                 "Major: ${userInfo.major}",
-                style: TextStyle(fontSize: 12,color: Colors.white),
+                style: TextStyle(fontSize: 12, color: Colors.white),
               ),
             ],
           );
@@ -194,7 +194,8 @@ class HomepageScreen extends StatelessWidget {
     final String? storedJwtToken = await getToken('loginToken');
     if (storedJwtToken != null) {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/getUserdetails'),
+        Uri.parse(
+            'https://capstone-m000pwytn-mohammad-yaseens-projects-0fcc5971.vercel.app/api/getUserdetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );
@@ -222,7 +223,8 @@ class HomepageScreen extends StatelessWidget {
     if (storedJwtToken != null) {
       // Send the token to the backend
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/update-or-verify-token'),
+        Uri.parse(
+            'https://capstone-m000pwytn-mohammad-yaseens-projects-0fcc5971.vercel.app/api/update-or-verify-token'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );

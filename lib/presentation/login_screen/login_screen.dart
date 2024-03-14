@@ -104,7 +104,8 @@ class LoginScreen extends StatelessWidget {
     if (_formKey.currentState?.validate() ?? false) {
       // Send the credentials to the backend
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/login'),
+        Uri.parse(
+            'https://capstone-m000pwytn-mohammad-yaseens-projects-0fcc5971.vercel.app/api/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': username, 'password': password}),
       );
@@ -124,7 +125,8 @@ class LoginScreen extends StatelessWidget {
 
           // Fetch user details
           final userResponse = await http.post(
-            Uri.parse('http://10.0.2.2:8000/api/getUserdetails'),
+            Uri.parse(
+                'https://capstone-m000pwytn-mohammad-yaseens-projects-0fcc5971.vercel.app/api/getUserdetails'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({'token': jwtToken}),
           );
