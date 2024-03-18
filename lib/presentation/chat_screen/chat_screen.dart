@@ -41,8 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final String? storedJwtToken = await getToken('convoToken');
     if (storedJwtToken != null) {
       final response = await http.post(
-        Uri.parse(
-            'https://capstone-m000pwytn-mohammad-yaseens-projects-0fcc5971.vercel.app/api/getUserdetails'),
+        Uri.parse('http://10.0.2.2:8000/api/getUserdetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );
@@ -74,6 +73,8 @@ class _ChatScreenState extends State<ChatScreen> {
           sender: map['sender'],
           message: map['message'],
           time: DateTime.parse(map['time']),
+          audioPath: map['audio_path'],
+          audioDuration: map['audio_duration'],
         );
       }).toList();
     });
@@ -371,8 +372,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
         // Send the audio data to the backend
         final response = await http.post(
-          Uri.parse(
-              'https://capstone-m000pwytn-mohammad-yaseens-projects-0fcc5971.vercel.app/api/ask'),
+          Uri.parse('http://10.0.2.2:8000/api/ask'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(requestBody),
         );
@@ -425,8 +425,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       final String? storedJwtToken = await getToken('convoToken');
       final response = await http.post(
-        Uri.parse(
-            'https://capstone-m000pwytn-mohammad-yaseens-projects-0fcc5971.vercel.app/api/ask'),
+        Uri.parse('http://10.0.2.2:8000/api/ask'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "message": "$message",
@@ -487,7 +486,8 @@ class _ChatScreenState extends State<ChatScreen> {
         curve: Curves.easeOut,
       );
     });
-    dbHelper.insertMessage(sender, message, time.toString(), currentUsername);
+    dbHelper.insertMessage(sender, message, time.toString(), currentUsername,
+        audioPath: audioPath, audioDuration: audioDuration);
   }
 
   Widget _buildTypingIndicator() {
