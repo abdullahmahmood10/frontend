@@ -194,7 +194,7 @@ class HomepageScreen extends StatelessWidget {
     final String? storedJwtToken = await getToken('loginToken');
     if (storedJwtToken != null) {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/getUserdetails'),
+        Uri.parse('https://capstone-opal-seven.vercel.app/api/getUserdetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );
@@ -222,7 +222,8 @@ class HomepageScreen extends StatelessWidget {
     if (storedJwtToken != null) {
       // Send the token to the backend
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/update-or-verify-token'),
+        Uri.parse(
+            'https://capstone-opal-seven.vercel.app/api/update-or-verify-token'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );

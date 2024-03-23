@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final String? storedJwtToken = await getToken('convoToken');
     if (storedJwtToken != null) {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/getUserdetails'),
+        Uri.parse('https://capstone-opal-seven.vercel.app/api/getUserdetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );
@@ -372,7 +372,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
         // Send the audio data to the backend
         final response = await http.post(
-          Uri.parse('http://10.0.2.2:8000/api/ask'),
+          Uri.parse('https://capstone-opal-seven.vercel.app/api/ask'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(requestBody),
         );
@@ -425,7 +425,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       final String? storedJwtToken = await getToken('convoToken');
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/ask'),
+        Uri.parse('https://capstone-opal-seven.vercel.app/api/ask'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "message": "$message",
