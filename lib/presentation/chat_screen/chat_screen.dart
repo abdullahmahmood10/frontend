@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final String? storedJwtToken = await getToken('convoToken');
     if (storedJwtToken != null) {
       final response = await http.post(
-        Uri.parse('https://capstone-opal-seven.vercel.app/api/getUserdetails'),
+        Uri.parse('http://10.0.2.2:8000/api/getUserdetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );
@@ -98,23 +98,13 @@ class _ChatScreenState extends State<ChatScreen> {
       DateTime currentTime = DateTime.now();
       _addMessage(
         sender: 'advisor',
-        message: 'Hi, I am Genie!',
+        message: 'Hi, I am Genie! How may I help you?',
         time: currentTime,
+        isFinish: true
       );
-
-      // Delay the second message by 1 second
-      Future.delayed(Duration(seconds: 1), () {
-        _addMessage(
-          sender: 'advisor',
-          message: 'How may I help you?',
-          time: currentTime,
-        );
-
-        // Hide typing indicator after messages are displayed
         setState(() {
           isLoading = false;
         });
-      });
     });
   }
 
@@ -221,6 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
           sender: 'advisor',
           message: 'Is there anything else I can help you with?',
           time: DateTime.now(),
+          isFinish: true
         );
       });
     });
@@ -355,6 +346,7 @@ class _ChatScreenState extends State<ChatScreen> {
           time: DateTime.now(),
           audioPath: _recordPath,
           audioDuration: roundedDuration,
+          isFinish: true
         );
 
         // Encode the audio file as base64
@@ -364,33 +356,39 @@ class _ChatScreenState extends State<ChatScreen> {
 
         // Construct the request body
         final String? storedJwtToken = await getToken('convoToken');
-        final Map<String, dynamic> requestBody = {
-          'token': storedJwtToken,
-          'audio': audioBase64,
-          'time': "$currentTime"
-        };
 
-        // Send the audio data to the backend
-        final response = await http.post(
-          Uri.parse('https://capstone-opal-seven.vercel.app/api/ask'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(requestBody),
-        );
+      String formattedTime = currentTime.toIso8601String();
 
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final socket = await WebSocket.connect('ws://10.0.2.2:8080');
+      Map<String, dynamic> data = {
+        'token': storedJwtToken,
+        'audio': audioBase64,
+        'time': formattedTime
+      };
+      socket.add(jsonEncode(data));
+      
+      bool isComplete = false;
+
+      socket.listen(
+        (data) {
+          if (data == "Message Finished!!@@"){
+            isComplete = true;
+            socket.close();
+          }
+
           setState(() {
-            isLoading = false; // Show typing indicator
-            _addMessage(
-              sender: 'advisor',
-              message: responseData['llm_response'],
-              time: DateTime.now().add(Duration(minutes: 1)),
-            );
-          });
-        } else {
-          print(
-              'Failed to connect to the server. Status Code: ${response.statusCode}');
+              isLoading = false;
+              _addMessage(
+                sender: 'advisor',
+                message: data,
+                time: currentTime.add(Duration(minutes: 1)),
+                isFinish: isComplete
+              );
+
+        });
+
         }
+      );
 
         // Clear the message controller and scroll to the bottom of the list
         setState(() {
@@ -420,34 +418,44 @@ class _ChatScreenState extends State<ChatScreen> {
           sender: 'user',
           message: message,
           time: currentTime,
+          isFinish: true
         );
       });
 
       final String? storedJwtToken = await getToken('convoToken');
-      final response = await http.post(
-        Uri.parse('https://capstone-opal-seven.vercel.app/api/ask'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "message": "$message",
-          'token': storedJwtToken,
-          'time': "$currentTime"
-        }),
-      );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        setState(() {
-          isLoading = false;
-          _addMessage(
-            sender: 'advisor',
-            message: responseData['llm_response'],
-            time: currentTime.add(Duration(minutes: 1)),
-          );
+      String formattedTime = currentTime.toIso8601String();
+
+      final socket = await WebSocket.connect('ws://10.0.2.2:8080');
+      Map<String, dynamic> data = {
+        'token': storedJwtToken,
+        'message': message,
+        'time': formattedTime
+      };
+      socket.add(jsonEncode(data));
+
+      bool isComplete = false;
+
+      socket.listen(
+        (data) {
+
+          if (data == "Message Finished!!@@"){
+            isComplete = true;
+            socket.close();
+          }
+
+          setState(() {
+              isLoading = false;
+              _addMessage(
+                sender: 'advisor',
+                message: data,
+                time: currentTime.add(Duration(minutes: 1)),
+                isFinish: isComplete
+              );
+
         });
-      } else {
-        print(
-            'Failed to connect to the server. Status Code: ${response.statusCode}');
-      }
+        }
+      );
 
       // Scroll to the bottom of the list after a short delay
       Future.delayed(Duration(milliseconds: 300), () {
@@ -460,13 +468,33 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  String fullMessage="";
+
   void _addMessage(
       {required String sender,
       required String message,
       required DateTime time,
+      required bool isFinish,
       String? audioPath,
-      int? audioDuration}) {
+      int? audioDuration})
+       {
+    if(message != "Message Finished!!@@"){
     setState(() {
+    if (chatMessages.isNotEmpty &&
+        chatMessages.last.sender == sender &&
+        sender == 'advisor' && !isFinish) {
+          final previousMessage = chatMessages.last;
+          final updatedMessage = '${previousMessage.message}$message';
+          fullMessage= updatedMessage;
+          chatMessages[chatMessages.length - 1] = ChatMessage(
+            sender: previousMessage.sender,
+            message: updatedMessage,
+            time: previousMessage.time,
+            audioPath: previousMessage.audioPath,
+            audioDuration: previousMessage.audioDuration,
+          );
+    } else {
+      // Otherwise, add the message as a new chat message
       chatMessages.add(
         ChatMessage(
           sender: sender,
@@ -476,7 +504,16 @@ class _ChatScreenState extends State<ChatScreen> {
           audioDuration: audioDuration,
         ),
       );
-    });
+      if(isFinish){
+        dbHelper.insertMessage(sender, message, time.toString(), currentUsername,
+        audioPath: audioPath, audioDuration: audioDuration);
+      }
+    }
+  });
+  }else{
+        dbHelper.insertMessage(sender, fullMessage, time.toString(), currentUsername,
+        audioPath: audioPath, audioDuration: audioDuration);
+  }
 
     // Scroll to the bottom of the list if the scroll controller is attached
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -485,9 +522,7 @@ class _ChatScreenState extends State<ChatScreen> {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
-    });
-    dbHelper.insertMessage(sender, message, time.toString(), currentUsername,
-        audioPath: audioPath, audioDuration: audioDuration);
+    });   
   }
 
   Widget _buildTypingIndicator() {
@@ -503,7 +538,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           SizedBox(width: 10), // Add spacing between avatar and "Typing"
           Text(
-            'is Typing',
+            'is typing',
             style: TextStyle(color: Colors.grey),
           ),
           SizedBox(width: 5), // Add spacing between "Typing" and dots
