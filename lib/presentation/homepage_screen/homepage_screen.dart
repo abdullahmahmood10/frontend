@@ -7,100 +7,358 @@ import 'package:mmm_s_application3/core/utils/storage_utils.dart';
 import 'package:mmm_s_application3/widgets/custom_elevated_button.dart';
 
 class HomepageScreen extends StatelessWidget {
-  const HomepageScreen({Key? key}) : super(key: key);
+  const HomepageScreen({Key? key})
+      : super(
+          key: key,
+        );
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              children: [
-                _buildPageTitle(context),
-                SizedBox(height: 44.v),
-                FutureBuilder(
-                  future: _getUserInfo(),
-                  builder: (context, AsyncSnapshot<UserInfo> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      final userInfo = snapshot.data!;
-                      return Text(
-                        "Welcome, ${userInfo.fullName}.",
-                        style:
-                            CustomTextStyles.titleLargeDMSansOnPrimaryContainer,
-                      );
-                    }
-                  },
+    return FutureBuilder<UserInfo>(
+      future: _getUserInfo(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Return a loading indicator if data is being fetched
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Handle error case
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // Data has been successfully fetched, use it to build UI
+          UserInfo userInfo = snapshot.data!;
+
+          return SafeArea(
+            child: Scaffold(
+              body: SingleChildScrollView(
+                child: Container(
+                  width: double.maxFinite,
+                  //padding: EdgeInsets.symmetric(horizontal: 10.h),
+                  child: Column(
+                    children: [
+                      _buildAdvisaGenius(context),
+                      SizedBox(height: 26.v),
+                      _buildFifteen(context, userInfo.fullName),
+                      SizedBox(height: 15.v),
+                      _buildEleven(context, userInfo.major, userInfo.username),
+                      SizedBox(height: 18.v),
+                      _buildFour(context),
+                      //SizedBox(height: 3.v),
+                      //_buildOneMillionFortyTwoThousandTwentyFour(context),
+                      SizedBox(height: 31.v),
+                      _buildChatWithGenie(context),
+                      SizedBox(height: 26.v),
+                      _buildTwo(context),
+                      SizedBox(height: 5.v),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 42.v),
-                CustomImageView(
-                  imagePath: ImageConstant.imgAdvisageniuslogo6171x90,
-                  height: 171.v,
-                  width: 90.h,
-                  onPressed: () {},
-                ),
-                SizedBox(height: 14.v),
-                Text(
-                  "Your Genie For Academic Advice",
-                  style: CustomTextStyles.titleLargeOpenSansPrimary,
-                ),
-                SizedBox(height: 15.v),
-                _buildUserInfo(),
-                SizedBox(height: 42.v),
-                CustomElevatedButton(
-                  height: 49.v,
-                  width: 179.h,
-                  text: "Chat with Genie ↴",
-                  onPressed: () {
-                    onTapChatWithGenie(context);
-                  },
-                ),
-                SizedBox(height: 5.v),
-              ],
+              ),
+              bottomNavigationBar: _buildBottomBar(context),
             ),
-          ),
+          );
+        }
+      },
+    );
+  }
+
+  /// Section Widget
+  Widget _buildAdvisaGenius(BuildContext context) {
+    return CustomElevatedButton(
+      height: 50.v,
+      text: "Advisa Genius",
+      buttonStyle: CustomButtonStyles.fillPrimary,
+      buttonTextStyle: CustomTextStyles.displaySmallindigoA200,
+    );
+  }
+
+  /// Section Widget
+  Widget _buildFifteen(BuildContext context, String fullName) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        height: 116.v,
+        width: 288.h,
+        margin: EdgeInsets.only(left: 18.h),
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 38.h,
+                  top: 17.v,
+                ),
+                child: Text(
+                  "Welcome,",
+                  style: theme.textTheme.headlineSmall,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 34.v),
+                child: Text(
+                  fullName,
+                  style: theme.textTheme.headlineSmall,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                height: 116.adaptSize,
+                width: 116.adaptSize,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        height: 116.v,
+                        width: 9.h,
+                        margin: EdgeInsets.only(left: 17.h),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          borderRadius: BorderRadius.circular(
+                            4.h,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 9.v,
+                        width: 116.h,
+                        margin: EdgeInsets.only(bottom: 15.v),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          borderRadius: BorderRadius.circular(
+                            4.h,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        bottomNavigationBar: _buildBottomBar(context),
       ),
     );
   }
 
-  Widget _buildPageTitle(BuildContext context) {
+  /// Section Widget
+  Widget _buildInformationSystemIS(BuildContext context, String major) {
+    return CustomElevatedButton(
+      width: 230.h,
+      text: major,
+    );
+  }
+
+  /// Section Widget
+  Widget _buildSixtyMillionOneHundredThousand(
+      BuildContext context, String username) {
+    return CustomElevatedButton(
+      width: 100.h,
+      text: username,
+    );
+  }
+
+  /// Section Widget
+  Widget _buildEleven(BuildContext context, String major, String username) {
+    return Row(
+      mainAxisAlignment:
+          MainAxisAlignment.center, // Center the widgets horizontally
+      children: [
+        _buildInformationSystemIS(context, major),
+        SizedBox(width: 5.h), // Adjusted the width of SizedBox for spacing
+        _buildSixtyMillionOneHundredThousand(context, username),
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildFour(BuildContext context) {
     return Container(
-      width: double.maxFinite,
-      padding: EdgeInsets.symmetric(horizontal: 136.h, vertical: 5.v),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: fs.Svg(ImageConstant.imgGroup4),
-          fit: BoxFit.cover,
-        ),
+      width: 330.h,
+      margin: EdgeInsets.only(right: 1.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: 25.h,
+        vertical: 5.v,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      decoration: AppDecoration.outlinePrimary.copyWith(
+        borderRadius: BorderRadiusStyle.circleBorder40,
+      ),
+      child: Row(
         children: [
-          SizedBox(height: 20.v),
-          Container(
-            width: 95.h,
-            margin: EdgeInsets.only(right: 7.h),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(text: "Advisa", style: theme.textTheme.displaySmall),
-                  TextSpan(text: "\n", style: CustomTextStyles.displaySmall36),
-                  TextSpan(
-                      text: "Genius", style: theme.textTheme.headlineMedium),
-                ],
+          CustomImageView(
+            imagePath: ImageConstant.imgAdvisageniuslogo6171x90,
+            width: 50.h,
+            onPressed: () {},
+          ),
+          SizedBox(width: 5.h),
+          Expanded(
+            child: Container(
+              width: 213.h,
+              margin: EdgeInsets.only(
+                left: 15.h,
+                top: 10.v,
+                bottom: 8.v,
               ),
-              textAlign: TextAlign.center,
+              child: Text(
+                "Achieve Academic Excellence Your AI Academic Companion!",
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: CustomTextStyles.bodyLargeInterOnPrimaryContainer,
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  /// Section Widget
+  // Widget _buildOneMillionFortyTwoThousandTwentyFour(BuildContext context) {
+  //   // Get the current date
+  //   DateTime now = DateTime.now();
+
+  //   // Format the date as required
+  //   String formattedDate = "${now.day.toString().padLeft(2, '0')} - "
+  //       "${now.month.toString().padLeft(2, '0')} - "
+  //       "${now.year}";
+
+  //   return CustomElevatedButton(
+  //     height: 30.v,
+  //     width: 170.h,
+  //     text: formattedDate,
+  //     buttonStyle: CustomButtonStyles.fillPrimaryTL15,
+  //     buttonTextStyle: CustomTextStyles.titleLargeRobotoGray50001,
+  //   );
+  // }
+
+  /// Section Widget
+  Widget _buildChatWithGenie(BuildContext context) {
+    return CustomElevatedButton(
+      width: 163.h,
+      text: "Chat With Genie ↴",
+      onPressed: () => onTapChatWithGenie(context),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildTwo(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 18.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.h,
+              vertical: 22.v,
+            ),
+            decoration: AppDecoration.outlinePrimary1.copyWith(
+              borderRadius: BorderRadiusStyle.roundedBorder15,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Important Dates",
+                  style: CustomTextStyles.bodyLargeInterOnPrimaryContainer,
+                ),
+                SizedBox(height: 26.v),
+                Padding(
+                  padding: EdgeInsets.only(right: 6.h),
+                  child: _buildEight(
+                    context,
+                    lastDayToRegister: "Deferred Exams ",
+                    month: "May 1, 2024",
+                  ),
+                ),
+                SizedBox(height: 10.v),
+                Divider(
+                  indent: 3.h,
+                  endIndent: 11.h,
+                  color: Colors.white,
+                ),
+                SizedBox(height: 14.v),
+                Padding(
+                  padding: EdgeInsets.only(right: 6.h),
+                  child: _buildEight(
+                    context,
+                    lastDayToRegister: "Last Day to Register ",
+                    month: "May 2, 2024",
+                  ),
+                ),
+                SizedBox(height: 9.v),
+                Divider(
+                  indent: 3.h,
+                  endIndent: 11.h,
+                  color: Colors.white,
+                ),
+                SizedBox(height: 12.v),
+                Padding(
+                  padding: EdgeInsets.only(right: 6.h),
+                  child: _buildEight(
+                    context,
+                    lastDayToRegister: "First Day of Classes ",
+                    month: "May 5, 2024",
+                  ),
+                ),
+                SizedBox(height: 10.v),
+                Divider(
+                  indent: 3.h,
+                  endIndent: 11.h,
+                  color: Colors.white,
+                ),
+                SizedBox(height: 14.v),
+                Padding(
+                  padding: EdgeInsets.only(right: 6.h),
+                  child: _buildEight(
+                    context,
+                    lastDayToRegister: "Last Add/Drop Date ",
+                    month: "May 9, 2024",
+                  ),
+                ),
+                SizedBox(height: 16.v),
+              ],
+            ),
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  /// Common widget
+  Widget _buildEight(
+    BuildContext context, {
+    required String lastDayToRegister,
+    required String month,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          lastDayToRegister,
+          style: theme.textTheme.bodyMedium!.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        Text(
+          month,
+          style: theme.textTheme.bodyMedium!.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
+      ],
     );
   }
 
@@ -152,44 +410,6 @@ class HomepageScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildUserInfo() {
-    return FutureBuilder(
-      future: _getUserInfo(),
-      builder: (context, AsyncSnapshot<UserInfo> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final userInfo = snapshot.data!;
-          return Column(
-            children: [
-              Text(
-                "Student ID: ${userInfo.username}",
-                style: TextStyle(fontSize: 12, color: Colors.white),
-              ),
-              SizedBox(height: 10),
-              // Text(
-              //   "Account Type: ${userInfo.accountType}",
-              //   style: TextStyle(fontSize: 8,color: Colors.white),
-              // ),
-              // SizedBox(height: 10),
-              // Text(
-              //   "Full Name: ${userInfo.fullName}",
-              //   style: TextStyle(fontSize: 10,color: Colors.white),
-              // ),
-              SizedBox(height: 10),
-              Text(
-                "Major: ${userInfo.major}",
-                style: TextStyle(fontSize: 12, color: Colors.white),
-              ),
-            ],
-          );
-        }
-      },
-    );
-  }
-
   Future<UserInfo> _getUserInfo() async {
     final String? storedJwtToken = await getToken('loginToken');
     if (storedJwtToken != null) {
@@ -222,8 +442,7 @@ class HomepageScreen extends StatelessWidget {
     if (storedJwtToken != null) {
       // Send the token to the backend
       final response = await http.post(
-        Uri.parse(
-            'http://10.0.2.2:8000/api/update-or-verify-token'),
+        Uri.parse('http://10.0.2.2:8000/api/update-or-verify-token'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'token': storedJwtToken}),
       );

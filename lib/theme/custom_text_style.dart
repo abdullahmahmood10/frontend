@@ -6,6 +6,11 @@ import '../core/app_export.dart';
 /// Additionally, this class includes extensions on [TextStyle] to easily apply specific font families to text.
 
 class CustomTextStyles {
+  // Headline text style
+  static get headlineLargeAladinOnPrimary =>
+      theme.textTheme.headlineLarge!.aladin.copyWith(
+        color: theme.colorScheme.onPrimary,
+      );
   // Body text style
   static get bodyLargeBluegray500 => theme.textTheme.bodyLarge!.copyWith(
         color: appTheme.blueGray500,
@@ -43,6 +48,17 @@ class CustomTextStyles {
       theme.textTheme.titleLarge!.roboto.copyWith(
         color: appTheme.gray50001,
       );
+  // Title text style
+  static get titleSmallMedium => theme.textTheme.titleSmall!.copyWith(
+        fontWeight: FontWeight.w500,
+      );
+  static get titleSmallPrimary => theme.textTheme.titleSmall!.copyWith(
+        color: theme.colorScheme.primary,
+      );
+  static get titleSmallPrimaryMedium => theme.textTheme.titleSmall!.copyWith(
+        color: theme.colorScheme.primary,
+        fontWeight: FontWeight.w500,
+      );
 }
 
 extension on TextStyle {
@@ -64,10 +80,15 @@ extension on TextStyle {
     );
   }
 
-
   TextStyle get roboto {
     return copyWith(
       fontFamily: 'Roboto',
+    );
+  }
+
+  TextStyle get aladin {
+    return copyWith(
+      fontFamily: 'Aladin',
     );
   }
 }
