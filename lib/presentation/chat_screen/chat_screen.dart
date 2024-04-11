@@ -8,6 +8,7 @@ import 'package:mmm_s_application3/core/utils/database_helper.dart';
 import 'package:mmm_s_application3/core/utils/storage_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
   FlutterSoundRecorder _audioRecorder = FlutterSoundRecorder();
   bool _isRecording = false;
   String _recordPath = '';
+  late String _selectedImagePath = '';
 
   bool isLoading = false; // Track loading state
 
@@ -75,6 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
           time: DateTime.parse(map['time']),
           audioPath: map['audio_path'],
           audioDuration: map['audio_duration'],
+          imagePath:map['image_path']
         );
       }).toList();
     });
@@ -93,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
       isLoading = true;
     });
 
-    // Delay the appearance of the greeting messages
+    // Delay the appearance of the greeting message
     Future.delayed(Duration(seconds: 2), () {
       DateTime currentTime = DateTime.now();
       _addMessage(
@@ -218,6 +221,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildUserInput() {
+    bool isLastMessageFromUser = chatMessages.isNotEmpty && chatMessages.last.sender == 'user';
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -242,20 +246,15 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           IconButton(
             icon: Icon(Icons.mic, color: Color(0xFF486AE4), size: 30.0),
-            onPressed: _toggleRecording,
+            onPressed: isLastMessageFromUser ? null : _toggleRecording,
           ),
           IconButton(
             icon: Icon(Icons.image, color: Color(0xFF486AE4), size: 30.0),
-            onPressed: () {
-// Placeholder for handling image icon click
-// You can open a dialog for uploading images here
-            },
+            onPressed: isLastMessageFromUser ? null : _pickImage,
           ),
           IconButton(
             icon: Icon(Icons.send, color: Color(0xFF486AE4), size: 30.0),
-            onPressed: () {
-              _sendMessage();
-            },
+            onPressed: isLastMessageFromUser ? null : _sendMessage, // Disable send button if the last message is from the user
           ),
         ],
       ),
@@ -366,13 +365,10 @@ class _ChatScreenState extends State<ChatScreen> {
         'time': formattedTime
       };
       socket.add(jsonEncode(data));
-      
-      bool isComplete = false;
 
       socket.listen(
         (data) {
           if (data == "Message Finished!!@@"){
-            isComplete = true;
             socket.close();
           }
 
@@ -382,7 +378,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 sender: 'advisor',
                 message: data,
                 time: currentTime.add(Duration(minutes: 1)),
-                isFinish: isComplete
+                isFinish: true
               );
 
         });
@@ -405,6 +401,70 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+void _pickImage() async {
+    DateTime currentTime = DateTime.now();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImagePath = pickedFile.path;
+        print(_selectedImagePath);
+        _addMessage(
+          sender: 'user',
+          message: '', // Empty message for image
+          time: DateTime.now(),
+          imagePath: _selectedImagePath,
+          isFinish: true,
+        );
+      });
+      final File imageFile = File(pickedFile.path);
+      final bytes = imageFile.readAsBytesSync();
+      String base64Image = base64Encode(bytes);
+
+      // Construct the request body
+      final String? storedJwtToken = await getToken('convoToken');
+
+
+      String formattedTime = currentTime.toIso8601String();
+
+      final socket = await WebSocket.connect('ws://10.0.2.2:8080');
+      Map<String, dynamic> data = {
+        'token': storedJwtToken,
+        'image': base64Image,
+        'time': formattedTime
+      };
+      socket.add(jsonEncode(data));
+      setState((){
+        isLoading=true;
+      });
+      socket.listen(
+        (data) {
+          if (data == "Message Finished!!@@"){
+            socket.close();
+          }else{
+            setState(() {
+              isLoading = false;
+              _addMessage(
+                sender: 'advisor',
+                message: data,
+                time: currentTime.add(Duration(minutes: 1)),
+                isFinish: true,
+              );
+          });
+          }
+
+          
+
+        }
+      );
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
 //change 1 ended
   void _sendMessage() async {
     String message = messageController.text.trim();
@@ -425,7 +485,7 @@ class _ChatScreenState extends State<ChatScreen> {
       final String? storedJwtToken = await getToken('convoToken');
 
       String formattedTime = currentTime.toIso8601String();
-
+      
       final socket = await WebSocket.connect('ws://10.0.2.2:8080');
       Map<String, dynamic> data = {
         'token': storedJwtToken,
@@ -435,7 +495,6 @@ class _ChatScreenState extends State<ChatScreen> {
       socket.add(jsonEncode(data));
 
       bool isComplete = false;
-
       socket.listen(
         (data) {
 
@@ -476,7 +535,8 @@ class _ChatScreenState extends State<ChatScreen> {
       required DateTime time,
       required bool isFinish,
       String? audioPath,
-      int? audioDuration})
+      int? audioDuration,
+      String? imagePath})
        {
     if(message != "Message Finished!!@@"){
     setState(() {
@@ -492,6 +552,7 @@ class _ChatScreenState extends State<ChatScreen> {
             time: previousMessage.time,
             audioPath: previousMessage.audioPath,
             audioDuration: previousMessage.audioDuration,
+            imagePath:previousMessage.imagePath,
           );
     } else {
       // Otherwise, add the message as a new chat message
@@ -502,17 +563,18 @@ class _ChatScreenState extends State<ChatScreen> {
           time: time,
           audioPath: audioPath,
           audioDuration: audioDuration,
+          imagePath: imagePath,
         ),
       );
       if(isFinish){
         dbHelper.insertMessage(sender, message, time.toString(), currentUsername,
-        audioPath: audioPath, audioDuration: audioDuration);
+        audioPath: audioPath, audioDuration: audioDuration, imagePath: imagePath);
       }
     }
   });
   }else{
         dbHelper.insertMessage(sender, fullMessage, time.toString(), currentUsername,
-        audioPath: audioPath, audioDuration: audioDuration);
+        audioPath: audioPath, audioDuration: audioDuration,imagePath: imagePath);
   }
 
     // Scroll to the bottom of the list if the scroll controller is attached
@@ -611,6 +673,7 @@ class ChatMessage extends StatelessWidget {
   final DateTime time;
   final String? audioPath;
   final int? audioDuration;
+  final String? imagePath;
 
   ChatMessage({
     required this.sender,
@@ -618,6 +681,7 @@ class ChatMessage extends StatelessWidget {
     required this.time,
     this.audioPath,
     this.audioDuration,
+    this.imagePath,
   });
 
   @override
@@ -654,12 +718,14 @@ class ChatMessage extends StatelessWidget {
                 ),
                 child: audioPath != null
                     ? _buildAudioPlayer(context, audioDuration ?? 0)
-                    : Text(
-                        message,
-                        style: TextStyle(
-                          color: messageTextColor,
-                        ),
-                      ),
+                    : imagePath != null
+                        ? Image.file(File(imagePath!))
+                        : Text(
+                            message,
+                            style: TextStyle(
+                              color: messageTextColor,
+                            ),
+                          ),
               ),
               if (sender == 'user')
                 CircleAvatar(

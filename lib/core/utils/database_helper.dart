@@ -26,7 +26,8 @@ class DatabaseHelper {
             time TEXT,
             username TEXT,
             audio_path TEXT,
-            audio_duration INTEGER
+            audio_duration INTEGER,
+            image_path TEXT
           )
         ''');
       },
@@ -35,7 +36,7 @@ class DatabaseHelper {
 
   Future<void> insertMessage(
       String sender, String message, String time, String username,
-      {String? audioPath, int? audioDuration}) async {
+      {String? audioPath, int? audioDuration, String? imagePath}) async {
     final Database db = await database;
     await db.insert(
       'chat_messages',
@@ -46,6 +47,7 @@ class DatabaseHelper {
         'username': username,
         'audio_path': audioPath,
         'audio_duration': audioDuration,
+        'image_path':imagePath
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
