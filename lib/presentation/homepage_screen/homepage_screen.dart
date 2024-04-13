@@ -313,7 +313,7 @@ Widget _buildChatWithGenie(BuildContext context) {
               Icon(Icons.chat, color: Colors.white), // Add an icon
               SizedBox(width: 8.0),
               Text(
-                "Click to Chat",
+                "Tap to Chat",
                 style: TextStyle(fontSize: 16.0, color: Colors.white),
               ),
             ],

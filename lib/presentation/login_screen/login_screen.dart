@@ -19,84 +19,141 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: SizedBox(
-                width: SizeUtils.width,
-                child: SingleChildScrollView(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom),
-                    child: Form(
-                        key: _formKey,
-                        child: Container(
-                            width: double.maxFinite,
-                            padding: EdgeInsets.symmetric(vertical: 55.v),
-                            child: Column(children: [
-                              _buildInfoSection(context),
-                              SizedBox(height: 33.v),
-                              Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 49.h, right: 51.h),
-                                  child: CustomTextFormField(
-                                      controller: studentAdvisorIDController,
-                                      hintText: "Student/Advisor ID")),
-                              SizedBox(height: 14.v),
-                              Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 49.h, right: 51.h),
-                                  child: CustomTextFormField(
-                                      controller: passwordController,
-                                      hintText: "Password",
-                                      textInputAction: TextInputAction.done,
-                                      textInputType:
-                                          TextInputType.visiblePassword,
-                                      obscureText: true)),
-                              SizedBox(height: 29.v),
-                              CustomElevatedButton(
-                                  text: "Login",
-                                  margin:
-                                      EdgeInsets.only(left: 49.h, right: 50.h),
-                                  onPressed: () {
-                                    onTapLogin(context);
-                                  }),
-                              SizedBox(height: 5.v)
-                            ])))))));
+      child: Scaffold(
+        backgroundColor: Colors
+            .transparent, // Set Scaffold's background color to transparent
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+          // Use Stack to overlay the gradient on top of Scaffold
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.white],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.30, 1.0], // 65% of blue, 35% of white
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              // Use SingleChildScrollView to allow scrolling
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 55.v),
+                  child: Column(
+                    children: [
+                      _buildInfoSection(context),
+                      SizedBox(height: 33.v),
+                      Padding(
+                        padding: EdgeInsets.only(left: 49.h, right: 51.h),
+                        child: CustomTextFormField(
+                          controller: studentAdvisorIDController,
+                          hintText: "Student/Advisor ID",
+                          hintStyle: TextStyle(
+                              color: Color.fromRGBO(194, 184, 184, 1)),
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 14.v),
+                      Padding(
+                        padding: EdgeInsets.only(left: 49.h, right: 51.h),
+                        child: CustomTextFormField(
+                          controller: passwordController,
+                          hintText: "Password",
+                          textInputAction: TextInputAction.done,
+                          textInputType: TextInputType.visiblePassword,
+                          obscureText: true,
+                          hintStyle: TextStyle(
+                              color: Color.fromRGBO(194, 184, 184, 1)),
+                          fillColor: const Color.fromRGBO(255, 255, 255, 1),
+                        ),
+                      ),
+                      SizedBox(height: 29.v),
+                      CustomElevatedButton(
+                        text: "Login",
+                        margin: EdgeInsets.only(left: 49.h, right: 50.h),
+                        onPressed: () {
+                          onTapLogin(context);
+                        },
+                        backgroundColor: Color.fromARGB(255, 72, 106, 228),
+                      ),
+                      SizedBox(height: 5.v),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   /// Section Widget
   Widget _buildInfoSection(BuildContext context) {
     return SizedBox(
-        height: 343.v,
-        width: double.maxFinite,
-        child: Stack(alignment: Alignment.topCenter, children: [
+      height: 343.v,
+      width: double.maxFinite,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
           Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 72.h),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Text("Login", style: theme.textTheme.headlineSmall),
-                    SizedBox(height: 9.v),
-                    SizedBox(
-                        width: 230.h,
-                        child: Text(
-                            "Chat your way to success! \nLogin to begin your journey ",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: CustomTextStyles.bodyLargePrimary
-                                .copyWith(height: 1.75)))
-                  ]))),
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 72.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Login",
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      shadows: [
+                        Shadow(
+                          color: Colors.blue.shade900.withOpacity(
+                              0.8), // Darker and more prominent blue shadow
+                          blurRadius:
+                              4, // Increase blur radius for more pronounced shadow
+                          offset: Offset(
+                              2, 2), // Increase shadow offset for more depth
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 9.v),
+                  SizedBox(
+                    width: 230.h,
+                    child: Text(
+                      "Chat your way to success! \nLogin to begin your journey ",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: CustomTextStyles.bodyLargePrimary.copyWith(
+                        color: Color.fromARGB(255, 255, 255,
+                            255), // Set text color to ARGB(255, 72, 106, 228)
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           CustomImageView(
             imagePath: ImageConstant.imgAdvisageniuslogo6,
             height: 249.v,
             width: 375.h,
             alignment: Alignment.topCenter,
             onPressed: () {},
-          )
-        ]));
+          ),
+        ],
+      ),
+    );
   }
 
-// Navigates to the homepageScreen when the action is triggered.
+  // Navigates to the homepageScreen when the action is triggered.
   onTapLogin(BuildContext context) async {
     String username = studentAdvisorIDController.text;
     String password = passwordController.text;
@@ -124,8 +181,7 @@ class LoginScreen extends StatelessWidget {
 
           // Fetch user details
           final userResponse = await http.post(
-            Uri.parse(
-                'http://10.0.2.2:8000/api/getUserdetails'),
+            Uri.parse('http://10.0.2.2:8000/api/getUserdetails'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({'token': jwtToken}),
           );

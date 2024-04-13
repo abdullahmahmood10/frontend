@@ -8,6 +8,7 @@ class CustomElevatedButton extends BaseButton {
     this.decoration,
     this.leftIcon,
     this.rightIcon,
+    this.backgroundColor = const Color.fromRGBO(33, 150, 243, 1), // Add backgroundColor parameter
     EdgeInsets? margin,
     VoidCallback? onPressed,
     ButtonStyle? buttonStyle,
@@ -30,10 +31,9 @@ class CustomElevatedButton extends BaseButton {
         );
 
   final BoxDecoration? decoration;
-
   final Widget? leftIcon;
-
   final Widget? rightIcon;
+  final Color backgroundColor; // Define backgroundColor parameter
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +49,11 @@ class CustomElevatedButton extends BaseButton {
         height: this.height ?? 55.v,
         width: this.width ?? double.maxFinite,
         margin: margin,
-        decoration: decoration,
+        decoration: decoration?.copyWith(color: backgroundColor), // Set background color
         child: ElevatedButton(
-          style: buttonStyle,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(backgroundColor), // Set button background color
+          ),
           onPressed: isDisabled ?? false ? null : onPressed ?? () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +62,9 @@ class CustomElevatedButton extends BaseButton {
               leftIcon ?? const SizedBox.shrink(),
               Text(
                 text,
-                style: buttonTextStyle ?? theme.textTheme.titleMedium,
+                style: buttonTextStyle ??
+                    theme.textTheme.titleMedium?.copyWith(color: Colors.white) ?? // Change text color to white
+                    TextStyle(color: Colors.white), // Fallback if theme.textTheme.titleMedium is null
               ),
               rightIcon ?? const SizedBox.shrink(),
             ],
