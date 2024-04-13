@@ -28,7 +28,19 @@ class HomepageScreen extends StatelessWidget {
           UserInfo userInfo = snapshot.data!;
 
           return SafeArea(
+            child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white,
+                  Colors.blue,
+                ],
+              ),
+            ),
             child: Scaffold(
+              backgroundColor: Colors.transparent, // Set scaffold's background color to transparent
               body: SingleChildScrollView(
                 child: Container(
                   width: double.maxFinite,
@@ -55,7 +67,7 @@ class HomepageScreen extends StatelessWidget {
               ),
               bottomNavigationBar: _buildBottomBar(context),
             ),
-          );
+          ));
         }
       },
     );
@@ -70,6 +82,7 @@ class HomepageScreen extends StatelessWidget {
       buttonTextStyle: CustomTextStyles.displaySmallindigoA200,
     );
   }
+  
 
   /// Section Widget
   Widget _buildFifteen(BuildContext context, String fullName) {
@@ -91,7 +104,8 @@ class HomepageScreen extends StatelessWidget {
                 ),
                 child: Text(
                   "Welcome,",
-                  style: theme.textTheme.headlineSmall,
+                  style: theme.textTheme.headlineSmall!.copyWith(
+    color: Color(0XFF486AE4),),
                 ),
               ),
             ),
@@ -101,7 +115,8 @@ class HomepageScreen extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 34.v),
                 child: Text(
                   fullName,
-                  style: theme.textTheme.headlineSmall,
+                  style: theme.textTheme.headlineSmall!.copyWith(
+    color: Color(0XFF486AE4),),
                 ),
               ),
             ),
@@ -120,7 +135,7 @@ class HomepageScreen extends StatelessWidget {
                         width: 9.h,
                         margin: EdgeInsets.only(left: 17.h),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary,
+                          color: Color(0XFF486AE4),
                           borderRadius: BorderRadius.circular(
                             4.h,
                           ),
@@ -134,7 +149,7 @@ class HomepageScreen extends StatelessWidget {
                         width: 116.h,
                         margin: EdgeInsets.only(bottom: 15.v),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary,
+                          color: Color(0XFF486AE4),
                           borderRadius: BorderRadius.circular(
                             4.h,
                           ),
@@ -152,21 +167,55 @@ class HomepageScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildInformationSystemIS(BuildContext context, String major) {
-    return CustomElevatedButton(
-      width: 230.h,
-      text: major,
-    );
-  }
+Widget _buildInformationSystemIS(BuildContext context, String major) {
+  return Container(
+    width: 230.h,
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+    decoration: BoxDecoration(
+      
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: Center(
+      child: Text(
+        major,
+        style: TextStyle(
+          color: Color(0XFF486AE4),
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  );
+}
+
+
 
   /// Section Widget
-  Widget _buildSixtyMillionOneHundredThousand(
-      BuildContext context, String username) {
-    return CustomElevatedButton(
-      width: 100.h,
-      text: username,
-    );
-  }
+  /// Section Widget
+Widget _buildSixtyMillionOneHundredThousand(BuildContext context, String username) {
+  return Container(
+    width: 100.h,
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: Center(
+      child: Text(
+        username,
+        style: TextStyle(
+          color: Color(0XFF486AE4),
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  );
+}
+
+
 
   /// Section Widget
   Widget _buildEleven(BuildContext context, String major, String username) {
@@ -182,45 +231,46 @@ class HomepageScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildFour(BuildContext context) {
-    return Container(
-      width: 330.h,
-      margin: EdgeInsets.only(right: 1.h),
-      padding: EdgeInsets.symmetric(
-        horizontal: 25.h,
-        vertical: 5.v,
+  /// Section Widget
+/// Section Widget
+Widget _buildFour(BuildContext context) {
+  return Container(
+    width: double.infinity,
+    margin: EdgeInsets.symmetric(horizontal: 18.h, vertical: 10.v),
+    padding: EdgeInsets.all(20.0),
+    decoration: BoxDecoration(
+      color: Color(0XFF486AE4),
+      border: Border.all(
+        color: Colors.white,
+        width: 3.0,
       ),
-      decoration: AppDecoration.outlinePrimary.copyWith(
-        borderRadius: BorderRadiusStyle.circleBorder40,
-      ),
-      child: Row(
-        children: [
-          CustomImageView(
-            imagePath: ImageConstant.imgAdvisageniuslogo6171x90,
-            width: 50.h,
-            onPressed: () {},
-          ),
-          SizedBox(width: 5.h),
-          Expanded(
-            child: Container(
-              width: 213.h,
-              margin: EdgeInsets.only(
-                left: 15.h,
-                top: 10.v,
-                bottom: 8.v,
-              ),
-              child: Text(
-                "Achieve Academic Excellence Your AI Academic Companion!",
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: CustomTextStyles.bodyLargeInterOnPrimaryContainer,
-              ),
+      borderRadius: BorderRadius.circular(20.0),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CustomImageView(
+          imagePath: ImageConstant.imgAdvisageniuslogo6171x90,
+          width: 50.h,
+          onPressed: () {},
+        ),
+        SizedBox(width: 20.h),
+        Expanded(
+          child: Text(
+            "Achieve Academic Excellence Your AI Academic Companion!",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
+
 
   /// Section Widget
   // Widget _buildOneMillionFortyTwoThousandTwentyFour(BuildContext context) {
@@ -242,100 +292,146 @@ class HomepageScreen extends StatelessWidget {
   // }
 
   /// Section Widget
-  Widget _buildChatWithGenie(BuildContext context) {
-    return CustomElevatedButton(
-      width: 163.h,
-      text: "Chat With Genie ↴",
-      onPressed: () => onTapChatWithGenie(context),
-    );
-  }
+Widget _buildChatWithGenie(BuildContext context) {
+  return Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: () {
+        onTapChatWithGenie(context);
+      },
+      borderRadius: BorderRadius.circular(25.0),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: Color(0XFF486AE4),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.chat, color: Colors.white), // Add an icon
+              SizedBox(width: 8.0),
+              Text(
+                "Click to Chat",
+                style: TextStyle(fontSize: 16.0, color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
+
+
+
+
+
+
 
   /// Section Widget
-  Widget _buildTwo(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 18.h),
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.h,
-              vertical: 22.v,
-            ),
-            decoration: AppDecoration.outlinePrimary1.copyWith(
-              borderRadius: BorderRadiusStyle.roundedBorder15,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Important Dates",
-                  style: CustomTextStyles.bodyLargeInterOnPrimaryContainer,
-                ),
-                SizedBox(height: 26.v),
-                Padding(
-                  padding: EdgeInsets.only(right: 6.h),
-                  child: _buildEight(
-                    context,
-                    lastDayToRegister: "Deferred Exams ",
-                    month: "May 1, 2024",
-                  ),
-                ),
-                SizedBox(height: 10.v),
-                Divider(
-                  indent: 3.h,
-                  endIndent: 11.h,
-                  color: Colors.white,
-                ),
-                SizedBox(height: 14.v),
-                Padding(
-                  padding: EdgeInsets.only(right: 6.h),
-                  child: _buildEight(
-                    context,
-                    lastDayToRegister: "Last Day to Register ",
-                    month: "May 2, 2024",
-                  ),
-                ),
-                SizedBox(height: 9.v),
-                Divider(
-                  indent: 3.h,
-                  endIndent: 11.h,
-                  color: Colors.white,
-                ),
-                SizedBox(height: 12.v),
-                Padding(
-                  padding: EdgeInsets.only(right: 6.h),
-                  child: _buildEight(
-                    context,
-                    lastDayToRegister: "First Day of Classes ",
-                    month: "May 5, 2024",
-                  ),
-                ),
-                SizedBox(height: 10.v),
-                Divider(
-                  indent: 3.h,
-                  endIndent: 11.h,
-                  color: Colors.white,
-                ),
-                SizedBox(height: 14.v),
-                Padding(
-                  padding: EdgeInsets.only(right: 6.h),
-                  child: _buildEight(
-                    context,
-                    lastDayToRegister: "Last Add/Drop Date ",
-                    month: "May 9, 2024",
-                  ),
-                ),
-                SizedBox(height: 16.v),
-              ],
-            ),
+  /// Section Widget
+Widget _buildTwo(BuildContext context) {
+  return SizedBox(
+    width: double.infinity,
+    child: Column(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 18.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.h,
+            vertical: 22.v,
           ),
-          SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Color(0XFF486AE4), // Set the border color here
+              width: 3.0, // Set the border width here
+            ),
+            color: Colors.white, // Change to the desired color for the container
+            borderRadius: BorderRadius.circular(15.0), // Adjust the border radius as needed
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Important Dates",
+                
+                style: TextStyle(
+                    color: Color(0XFF486AE4), // Change the text color here
+                    fontSize: 18.0, // Adjust the font size as needed
+                    fontWeight: FontWeight.bold, // Adjust the font weight as needed
+                  )
+              ),
+              SizedBox(height: 26.v),
+              Padding(
+                padding: EdgeInsets.only(right: 6.h),
+                child: _buildEight(
+                  context,
+                  lastDayToRegister: "Deferred Exams ",
+                  month: "May 1, 2024",
+                  
+                ),
+              ),
+              SizedBox(height: 10.v),
+              Divider(
+                indent: 3.h,
+                endIndent: 11.h,
+                color: Color(0XFF486AE4),
+              ),
+              SizedBox(height: 14.v),
+              Padding(
+                padding: EdgeInsets.only(right: 6.h),
+                child: _buildEight(
+                  context,
+                  lastDayToRegister: "Last Day to Register ",
+                  month: "May 2, 2024",
+                  
+                ),
+              ),
+              SizedBox(height: 9.v),
+              Divider(
+                indent: 3.h,
+                endIndent: 11.h,
+                color: Color(0XFF486AE4),
+              ),
+              SizedBox(height: 12.v),
+              Padding(
+                padding: EdgeInsets.only(right: 6.h),
+                child: _buildEight(
+                  context,
+                  lastDayToRegister: "First Day of Classes ",
+                  month: "May 5, 2024",
+                ),
+              ),
+              SizedBox(height: 10.v),
+              Divider(
+                indent: 3.h,
+                endIndent: 11.h,
+                color: Color(0XFF486AE4),
+              ),
+              SizedBox(height: 14.v),
+              Padding(
+                padding: EdgeInsets.only(right: 6.h),
+                child: _buildEight(
+                  context,
+                  lastDayToRegister: "Last Add/Drop Date ",
+                  month: "May 9, 2024",
+                ),
+              ),
+              SizedBox(height: 16.v),
+            ],
+          ),
+        ),
+        SizedBox(height: 20),
+      ],
+    ),
+  );
+}
+
 
   /// Common widget
   Widget _buildEight(
@@ -348,14 +444,17 @@ class HomepageScreen extends StatelessWidget {
       children: [
         Text(
           lastDayToRegister,
+          
           style: theme.textTheme.bodyMedium!.copyWith(
-            color: theme.colorScheme.primary,
+            color: Color(0XFF486AE4)
+            ,
           ),
         ),
         Text(
           month,
           style: theme.textTheme.bodyMedium!.copyWith(
-            color: theme.colorScheme.primary,
+            color: Color(0XFF486AE4),
+
           ),
         ),
       ],
@@ -364,9 +463,11 @@ class HomepageScreen extends StatelessWidget {
 
   Widget _buildBottomBar(BuildContext context) {
     return SizedBox(
+    
       child: Container(
         width: double.maxFinite,
         padding: EdgeInsets.symmetric(horizontal: 17.h, vertical: 14.v),
+        margin: EdgeInsets.only(top: 5.0),
         decoration: BoxDecoration(
           image: DecorationImage(
             image: fs.Svg(ImageConstant.imgGroup3),
@@ -383,7 +484,7 @@ class HomepageScreen extends StatelessWidget {
               child: Container(
                 height: 85.adaptSize,
                 width: 85.adaptSize,
-                margin: EdgeInsets.only(right: 10.0),
+                margin: EdgeInsets.only(right: 10.0, top: 1.0),
                 padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 4.v),
                 decoration: AppDecoration.fillIndigoA200.copyWith(
                   borderRadius: BorderRadiusStyle.roundedBorder42,

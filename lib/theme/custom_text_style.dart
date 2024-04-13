@@ -30,7 +30,7 @@ class CustomTextStyles {
         fontSize: 36.fSize,
       );
   static get displaySmallindigoA200 => theme.textTheme.displaySmall!.copyWith(
-        color: appTheme.indigoA200,
+        color: appTheme.indigoA300,//Advisa on top
         fontSize: 36.fSize,
       );
   // Title text style

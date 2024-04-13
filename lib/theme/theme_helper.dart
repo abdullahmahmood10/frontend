@@ -173,10 +173,12 @@ class PrimaryColors {
   Color get gray50001 => Color(0XFF999999);
   Color get gray50033 => Color(0X33A1A1A1);
 
-  // Indigo
+  // Indigo Color(0XFF486AE4);
   Color get indigoA200 => Color(0XFF486AE4);
+  Color get indigoA300 => Colors.white;
   Color get indigoA400 => Color(0XFF4065E7);
   Color get indigoA700 => Color(0XFF3451E8);
+  Color get indigoA900 => Colors.white;
 }
 
 PrimaryColors get appTheme => ThemeHelper().themeColor();
