@@ -365,10 +365,12 @@ class _ChatScreenState extends State<ChatScreen> {
         'time': formattedTime
       };
       socket.add(jsonEncode(data));
+      bool isComplete = false;
 
       socket.listen(
         (data) {
           if (data == "Message Finished!!@@"){
+            isComplete = true;
             socket.close();
           }
 
@@ -378,7 +380,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 sender: 'advisor',
                 message: data,
                 time: currentTime.add(Duration(minutes: 1)),
-                isFinish: true
+                isFinish: isComplete
               );
 
         });
