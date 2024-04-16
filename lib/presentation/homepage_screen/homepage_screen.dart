@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as fs;
 import 'package:mmm_s_application3/core/app_export.dart';
 import 'package:mmm_s_application3/core/utils/storage_utils.dart';
-import 'package:mmm_s_application3/widgets/custom_elevated_button.dart';
+
 
 class HomepageScreen extends StatelessWidget {
   const HomepageScreen({Key? key})
@@ -74,14 +74,24 @@ class HomepageScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildAdvisaGenius(BuildContext context) {
-    return CustomElevatedButton(
-      height: 50.v,
-      text: "Advisa Genius",
-      buttonStyle: CustomButtonStyles.fillPrimary,
-      buttonTextStyle: CustomTextStyles.displaySmallindigoA200,
-    );
-  }
+Widget _buildAdvisaGenius(BuildContext context) {
+  return Container(
+    height: 50.v,
+    decoration: BoxDecoration(
+      color: Color(0XFF486AE4),
+      borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(30.h),
+      ),
+    ),
+    alignment: Alignment.center,
+    child: Text(
+      "Advisa Genius",
+      style: CustomTextStyles.displaySmallindigoA200,
+    ),
+  );
+}
+
+
   
 
   /// Section Widget
@@ -461,9 +471,10 @@ Widget _buildTwo(BuildContext context) {
     );
   }
 
-  Widget _buildBottomBar(BuildContext context) {
-    return SizedBox(
-    
+Widget _buildBottomBar(BuildContext context) {
+  return SizedBox(
+    child: Transform.translate(
+      offset: Offset(0.0, 6.0), // Adjust the vertical offset as needed
       child: Container(
         width: double.maxFinite,
         padding: EdgeInsets.symmetric(horizontal: 17.h, vertical: 14.v),
@@ -508,8 +519,10 @@ Widget _buildTwo(BuildContext context) {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Future<UserInfo> _getUserInfo() async {
     final String? storedJwtToken = await getToken('loginToken');

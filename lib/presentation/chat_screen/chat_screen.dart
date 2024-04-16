@@ -460,11 +460,13 @@ void _pickImage() async {
 
         }
       );
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      Future.delayed(Duration(milliseconds: 300), () {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });;
     }
   }
 //change 1 ended
