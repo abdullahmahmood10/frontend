@@ -9,6 +9,7 @@ import 'package:mmm_s_application3/core/utils/storage_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -724,12 +725,21 @@ class ChatMessage extends StatelessWidget {
                     ? _buildAudioPlayer(context, audioDuration ?? 0)
                     : imagePath != null
                         ? Image.file(File(imagePath!))
-                        : Text(
-                            message,
-                            style: TextStyle(
-                              color: messageTextColor,
-                            ),
-                          ),
+                        : sender == 'advisor'
+                            ? MarkdownBody(
+                                data: message,
+                                styleSheet: MarkdownStyleSheet(
+                                  p: TextStyle(
+                                    color: messageTextColor,
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                message,
+                                style: TextStyle(
+                                  color: messageTextColor,
+                                ),
+                              ),
               ),
               if (sender == 'user')
                 CircleAvatar(
